@@ -35,14 +35,14 @@ namespace KingVsFly.GameInfo
         {
             { 102, new List<Point>
             {
-                new Point(176, -36402),
-                new Point(261, -36450),
-                new Point(379, -36458),
-                new Point(121, -36554),
-                new Point(231, -36578),
-                new Point(398, -36618),
-                new Point(242, -36666),
-                new Point(166, -36690),
+                new Point(176, -36407),
+                new Point(261, -36455),
+                new Point(379, -36463),
+                new Point(121, -36559),
+                new Point(231, -36583),
+                new Point(398, -36623),
+                new Point(242, -36671),
+                new Point(166, -36695),
             }
             },
             { 103, new List<Point>
