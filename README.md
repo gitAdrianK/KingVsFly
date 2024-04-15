@@ -17,3 +17,6 @@ This mod does not save (yet, unsure if it ever will), it is supposed to be playe
 While the mod doesn't save, Jump King sure still does, so be aware that you do not have a run going you want to keep.
 
 Art donations are appreciated, lmao
+
+## Find the mod on steam here
+[Mod](https://steamcommunity.com/sharedfiles/filedetails/?id=3217622959)
