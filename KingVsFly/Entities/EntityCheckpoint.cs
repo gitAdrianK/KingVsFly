@@ -1,5 +1,6 @@
 ﻿using EntityComponent;
 using JumpKing;
+using JumpKing.Level;
 using JumpKing.Player;
 using KingVsFly.Game;
 using Microsoft.Xna.Framework;
@@ -44,7 +45,7 @@ namespace KingVsFly.Entities
             }
             if (screen < gameState.currentScreen
                 && Camera.CurrentScreen == screen + 1
-                && player.m_body.IsOnGround)
+                && (player.m_body.IsOnGround || player.m_body.IsOnBlock<SandBlock>()))
             {
                 gameState.resetPosition = gameState.positions[(int)gameState.enumerator.Current][0];
                 if (Camera.CurrentScreen != gameState.currentScreen)

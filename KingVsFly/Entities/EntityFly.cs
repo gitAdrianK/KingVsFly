@@ -1,5 +1,6 @@
 ﻿using EntityComponent;
 using JumpKing;
+using JumpKing.Level;
 using JumpKing.Player;
 using JumpKing.XnaWrappers;
 using KingVsFly.Game;
@@ -117,7 +118,8 @@ namespace KingVsFly.Entities
         {
             Vector2 center = new Vector2(position.X + 10, position.Y);
             float distanceTo = (center - player.m_body.GetHitbox().Center.ToVector2()).LengthSquared();
-            if (!player.m_body.IsOnGround || distanceTo > 800)
+
+            if (!player.m_body.IsOnGround && !player.m_body.IsOnBlock<SandBlock>() || distanceTo > 800)
             {
                 return;
             }
