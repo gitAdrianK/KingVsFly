@@ -32,8 +32,8 @@ namespace KingVsFly.Game
             switch (map)
             {
                 case Map.MainBabe:
-                    positions = MainBabeGameInfo.positions;
                     enumerator = AreaBounds.BoundsListIterator(MainBabeGameInfo.areas).GetEnumerator();
+                    positions = MainBabeGameInfo.positions;
                     finalScreen = MainBabeGameInfo.finalScreen;
                     break;
                 case Map.NewBabe:
