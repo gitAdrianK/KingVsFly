@@ -7,14 +7,12 @@ using JumpKing.PauseMenu.BT.Actions;
 using JumpKing.Player;
 using JumpKing.SaveThread;
 using KingVsFly.Entities;
-using KingVsFly.Game;
 using KingVsFly.Nodes;
 using KingVsFly.Patching;
 using System.Collections.Generic;
-using static KingVsFly.Game.GameState;
 
-// It's ugly :)
-// I don't want to patch everything with Harmony, I'm lazy.
+// Patching with Harmony was a crashfest for some reason,
+// so for now its "workarounds".
 
 namespace KingVsFly
 {
@@ -24,7 +22,6 @@ namespace KingVsFly
         public static bool isEnabled;
         public static bool isCheckpoint;
 
-        public static GameState gameState;
         public static EntityCheckpoint entityCheckpoint;
         public static EntityFly entityFly;
 
@@ -80,28 +77,17 @@ namespace KingVsFly
                 return;
             }
 
-            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
-            {
-                gameState = new GameState(Map.GhostBabe);
-            }
-            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
-            {
-                gameState = new GameState(Map.NewBabe);
-            }
-            else
-            {
-                gameState = new GameState(Map.MainBabe);
-            }
-
             List<Entity> toRemoveEntities = new List<Entity>();
             foreach (var entity in entityManager.Entities)
             {
                 // Removing the majority of entities to give the feel of "After the events of Jump King".
                 // Whatever that is supposed to mean :)
+                // Making so many exceptions I might just go positive logic
                 string type = entity.GetType().ToString();
                 if ((type.Contains("Props") && !type.Contains("LoopingProp"))
                     || type.Contains("MiscEntities")
-                    || type.Contains("MultiEnding"))
+                    || type.Contains("MultiEnding")
+                    || type.Contains("Rayman"))
                 {
                     toRemoveEntities.Add(entity);
                 }
@@ -111,14 +97,17 @@ namespace KingVsFly
                 entityManager.RemoveObject(entity);
             }
 
-            entityFly = new EntityFly(gameState, entityPlayer);
-            entityManager.AddObject(entityFly);
-
+            entityFly = new EntityFly(entityPlayer);
             if (isCheckpoint)
             {
-                entityCheckpoint = new EntityCheckpoint(gameState, entityPlayer);
+                entityCheckpoint = new EntityCheckpoint(entityPlayer);
+
+                entityFly.entityCheckpoint = entityCheckpoint;
+                entityCheckpoint.entityFly = entityFly;
+
                 entityManager.AddObject(entityCheckpoint);
             }
+            entityManager.AddObject(entityFly);
         }
 
         /// <summary>
@@ -139,8 +128,6 @@ namespace KingVsFly
 
             entityFly = null;
             entityCheckpoint = null;
-
-            gameState = null;
 
             SaveManager.instance?.StopSaving();
             SaveManager.instance?.AddTaskDeleteSaveFile();

@@ -2,21 +2,30 @@
 using JumpKing;
 using JumpKing.Level;
 using JumpKing.Player;
+using JumpKing.SaveThread;
 using JumpKing.XnaWrappers;
-using KingVsFly.Game;
+using KingVsFly.GameInfo;
 using KingVsFly.Patching;
 using KingVsFly.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using static JumpKing.JKContentManager.RavenSprites;
 using static KingVsFly.Patching.GameLoopDraw;
 
 namespace KingVsFly.Entities
 {
     public class EntityFly : Entity
     {
+        private List<AreaBounds> areas;
+        private Dictionary<int, List<Point>> positions;
+        private int finalScreen;
+        private IEnumerator<int> enumerator;
+        private Queue<Point> positionsQueue;
+        public int currentScreen => enumerator.Current;
+        private int prevScreen;
+
         private enum Facing
         {
             Left,
@@ -31,63 +40,77 @@ namespace KingVsFly.Entities
             Waiting,
         }
 
-        GameState gameState;
-        JKContentManager contentManager;
-        Random random;
+        private Facing facing;
+        private State state;
 
-        FlyContent content;
-        JKSound sound;
-        Queue<Point> positionsQueue;
+        private Random random;
 
-        Facing facing;
-        State state;
-        int screen;
-        int prevScreen;
+        private RavenContent flySprites;
+        private JKSound sound;
 
-        float progress;
-        Vector2 position;
-        Vector2 prevPosition;
-        Vector2 nextPosition;
+        private float progress;
+        private Vector2 position;
+        private Vector2 nextPosition;
+        private Vector2 prevPosition;
 
-        int idleIndex;
-        int idleCooldown;
+        private int idleIndex;
+        private int idleCooldown;
+        private int flyingIndex;
+        private int flyingFrames;
 
-        int flyingIndex;
-        int flyingFrames;
+        private PlayerEntity entityPlayer;
+        public EntityCheckpoint entityCheckpoint;
 
-        PlayerEntity player;
+        private bool isUnderburgRevisit65;
+        private bool isUnderburgRevisit66;
 
-        public EntityFly(GameState gameState, PlayerEntity player)
+        public EntityFly(PlayerEntity entityPlayer)
         {
-            contentManager = Game1.instance.contentManager;
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
+            {
+                areas = GhostBabeGameInfo.areas;
+                positions = GhostBabeGameInfo.positions;
+                finalScreen = GhostBabeGameInfo.finalScreen;
+            }
+            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
+            {
+                areas = NewBabeGameInfo.areas;
+                positions = NewBabeGameInfo.positions;
+                finalScreen = NewBabeGameInfo.finalScreen;
+            }
+            else
+            {
+                areas = MainBabeGameInfo.areas;
+                positions = MainBabeGameInfo.positions;
+                finalScreen = MainBabeGameInfo.finalScreen;
+            }
+            enumerator = AreaBounds.BoundsListIterator(areas).GetEnumerator();
+            enumerator.MoveNext();
+            prevScreen = currentScreen;
+            positionsQueue = new Queue<Point>();
+            GetRandomCurrentScreenPoints();
+            position = positionsQueue.Dequeue().ToVector2();
+            prevPosition = position;
+            nextPosition = position;
+
             random = Game1.random;
 
-            char sep = Path.DirectorySeparatorChar;
-            string directory = $"{Game1.instance.contentManager.root}{sep}props{sep}textures{sep}raven{sep}fly";
-
-            // Be aware that when started through WS or on a custom map no RavenContent exists where we could try to get the fly textures.
-            // So we just load it ourselves.
-            content = new FlyContent(contentManager.Load<Texture2D>(directory));
-            contentManager?.audio?.music?.event_music?.TryGetValue("bug_fly", out sound);
-
-            this.gameState = gameState;
-
-            positionsQueue = gameState.GetRandomCurrentScreenPoints();
-
-            screen = gameState.currentScreen;
-            prevScreen = screen;
+            JKContentManager contentManager = Game1.instance.contentManager;
+            // Be aware that when started through WS or on a custom map no RavenContent exists where we could try to get the fly textures,
+            // but since the mod requires explicit activation in the menu this is irrelevant.
+            flySprites = contentManager.ravenSprites.raven_content["fly"];
+            contentManager.audio.music.event_music.TryGetValue("bug_fly", out sound);
 
             progress = 0.0f;
-            position = positionsQueue.Dequeue().ToVector2();
-            nextPosition = positionsQueue.Dequeue().ToVector2();
-
             idleIndex = 0;
             idleCooldown = 0;
-
             flyingIndex = 0;
             flyingFrames = 5;
 
-            this.player = player;
+            this.entityPlayer = entityPlayer;
+
+            isUnderburgRevisit65 = false;
+            isUnderburgRevisit66 = false;
         }
 
         protected override void Update(float deltaTime)
@@ -117,20 +140,24 @@ namespace KingVsFly.Entities
         private void UpdateIdleState()
         {
             Vector2 center = new Vector2(position.X + 10, position.Y);
-            float distanceTo = (center - player.m_body.GetHitbox().Center.ToVector2()).LengthSquared();
-
-            if (!player.m_body.IsOnGround && !player.m_body.IsOnBlock<SandBlock>() || distanceTo > 800)
+            float distanceTo = (center - entityPlayer.m_body.GetHitbox().Center.ToVector2()).LengthSquared();
+            if (!entityPlayer.m_body.IsOnGround
+                && !entityPlayer.m_body.IsOnBlock<SandBlock>()
+                || distanceTo > 800)
             {
                 return;
             }
-            gameState.resetPosition = position.ToPoint();
+
+            if (entityCheckpoint != null)
+            {
+                entityCheckpoint.resetPosition = position.ToPoint();
+            }
             prevPosition = position;
             if (positionsQueue.Count == 0)
             {
-                gameState.AdvanceScreen();
-                prevScreen = screen;
-                screen = gameState.currentScreen;
-                positionsQueue = gameState.GetRandomCurrentScreenPoints();
+                prevScreen = currentScreen;
+                enumerator.MoveNext();
+                GetRandomCurrentScreenPoints();
             }
             nextPosition = positionsQueue.Dequeue().ToVector2();
             state = position.Y < nextPosition.Y ? State.FlyingDown : State.FlyingUp;
@@ -147,7 +174,7 @@ namespace KingVsFly.Entities
             }
             if (random.Next(100) == 0)
             {
-                idleIndex = random.Next(content.IdleSprites.Length);
+                idleIndex = random.Next(flySprites.IdleSprites.Length);
                 idleCooldown = 60;
             }
         }
@@ -167,7 +194,7 @@ namespace KingVsFly.Entities
                 state = State.Idle;
                 position = nextPosition;
                 prevPosition = position;
-                if (screen == gameState.finalScreen)
+                if (currentScreen == finalScreen)
                 {
                     state = State.Waiting;
                 }
@@ -189,10 +216,10 @@ namespace KingVsFly.Entities
         private void UpdateWaiting()
         {
             // XXX: The trigger for the normal babe ending is still there so we stop the player
-            // before he walk into it.
-            if (player.m_body.Position.Y <= position.Y + 1)
+            // before he walks into it.
+            if (entityPlayer.m_body.Position.Y <= position.Y + 1)
             {
-                player.m_body.Velocity = Vector2.Zero;
+                entityPlayer.m_body.Velocity = Vector2.Zero;
                 if (GameLoopDraw.state == EndingState.Waiting)
                 {
                     GameLoopDraw.state = EndingState.Blackscreen;
@@ -200,10 +227,65 @@ namespace KingVsFly.Entities
             }
         }
 
+        /// <summary>
+        /// Gets a queue containing positions based on the current screen.
+        /// The first point will never be the first and consecutive points will never be the same point.
+        /// That is the first positions are inside the screen and the last one above the screen to "indicate a flying away"
+        /// </summary>
+        /// <returns>Queue of random points.</returns>
+        private void GetRandomCurrentScreenPoints()
+        {
+            if (currentScreen == 65)
+            {
+                if (isUnderburgRevisit65)
+                {
+                    positionsQueue.Enqueue(positions[currentScreen][3]);
+                    return;
+                }
+                positionsQueue.Enqueue(positions[currentScreen][1]);
+                isUnderburgRevisit65 = true;
+                return;
+            }
+            if (currentScreen == 66)
+            {
+                if (isUnderburgRevisit66)
+                {
+                    positionsQueue.Enqueue(positions[currentScreen][3]);
+                    return;
+                }
+                positionsQueue.Enqueue(positions[currentScreen][1]);
+                isUnderburgRevisit66 = true;
+                return;
+            }
+
+            if (positions[currentScreen].Count == 2)
+            {
+                positionsQueue.Enqueue(positions[currentScreen][1]);
+                return;
+            }
+
+            Random random = Game1.random;
+            List<Point> points = positions[currentScreen];
+            int next = random.Next(1, points.Count);
+            int prev = next;
+            positionsQueue.Enqueue(points[next]);
+            // FIXME: The fly sometimes has the same point in a row. Why?
+            // It seems to have fixed itself randomly? I think?
+            for (int i = 0; i < 3; i++)
+            {
+                do
+                {
+                    next = random.Next(points.Count);
+                } while (next == prev);
+                prev = next;
+                positionsQueue.Enqueue(points[next]);
+            }
+        }
+
         public override void Draw()
         {
             int cameraScreen = Camera.CurrentScreen;
-            if (!(prevScreen == cameraScreen || screen == cameraScreen))
+            if (prevScreen != cameraScreen && currentScreen != cameraScreen)
             {
                 return;
             }
@@ -215,13 +297,13 @@ namespace KingVsFly.Entities
             {
                 case State.Idle:
                 case State.Waiting:
-                    sprite = content?.IdleSprites[idleIndex];
+                    sprite = flySprites.IdleSprites[idleIndex];
                     break;
                 case State.FlyingDown:
-                    sprite = content?.FlyDownTreasure[flyingIndex % content.FlyDownTreasure.Length];
+                    sprite = flySprites.FlyDownTreasure[flyingIndex % flySprites.FlyDownTreasure.Length];
                     break;
                 case State.FlyingUp:
-                    sprite = content?.Fly[flyingIndex % content.Fly.Length];
+                    sprite = flySprites.Fly[flyingIndex % flySprites.Fly.Length];
                     break;
                 default:
                     // UnreachableException.
