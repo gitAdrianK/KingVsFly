@@ -29,7 +29,6 @@ namespace KingVsFly
         public static GameLoopDraw gameLoopDraw;
 
         // DO NOT REMOVE object and GuiFormat even if they are unused!
-        #region Menu Items
         [MainMenuItemSetting]
         public static ITextToggle AddToggleEnabled(object factory, GuiFormat format)
         {
@@ -41,7 +40,6 @@ namespace KingVsFly
         {
             return new NodeToggleCheckpoint(isCheckpoint);
         }
-        #endregion
 
         [BeforeLevelLoad]
         public static void BeforeLevelLoad()
