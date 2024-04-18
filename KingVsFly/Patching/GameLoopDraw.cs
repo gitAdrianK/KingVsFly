@@ -114,6 +114,7 @@ namespace KingVsFly.Patching
                 case EndingState.Image:
                     if (duration <= 0)
                     {
+                        duration = 30;
                         state = EndingState.ToMenu;
                     }
                     spriteBatch.Draw(pixel, new Rectangle(0, 0, Game1.WIDTH, Game1.HEIGHT), Color.Black);

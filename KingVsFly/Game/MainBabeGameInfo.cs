@@ -96,7 +96,7 @@ namespace KingVsFly.GameInfo
             {
                 new Point(402, -1842),
                 new Point(300, -1978),
-                new Point(163, -1964),
+                new Point(163, -1946),
                 new Point(17, -2018),
                 new Point(129, -2138),
             }
@@ -174,7 +174,6 @@ namespace KingVsFly.GameInfo
             { 13, new List<Point>
             {
                 new Point(260, -4442),
-                new Point(404, -4570),
                 new Point(251, -4610),
             }
             },
