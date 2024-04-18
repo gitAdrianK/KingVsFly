@@ -11,15 +11,16 @@ namespace KingVsFly.GameInfo
         /// </summary>
         public static readonly List<AreaBounds> areas = new List<AreaBounds>
         {
-            new AreaBounds(47, 51),         // Brightcrown Woods
-            new AreaBounds(52, 58),         // Colossal Dungeon
-            new AreaBounds(59, 62),         // False Kings Castle
-            new AreaBounds(63, 69, 65, 66), // Underburg
-            new AreaBounds(70, 75, 71),     // Lost Frontier
-            new AreaBounds(78, 81),         // Hidden Kingdom
-            new AreaBounds(83, 88),         // Black Sanctum
-            new AreaBounds(89, 93),         // Deep Ruin
-            new AreaBounds(94, 99),         // The Dark Tower
+            new AreaBounds(46, 51), // Brightcrown Woods
+            new AreaBounds(52, 58), // Colossal Dungeon
+            new AreaBounds(59, 62), // False Kings Castle
+            new AreaBounds(63, 66), // Underburg p1
+            new AreaBounds(65, 69), // Underburg p2
+            new AreaBounds(70, 76), // Lost Frontier
+            new AreaBounds(77, 82), // Hidden Kingdom
+            new AreaBounds(83, 88), // Black Sanctum
+            new AreaBounds(89, 93), // Deep Ruin
+            new AreaBounds(94, 99), // The Dark Tower
         };
 
         /// <summary>
@@ -34,6 +35,12 @@ namespace KingVsFly.GameInfo
         /// </summary>
         public static readonly Dictionary<int, List<Point>> positions = new Dictionary<int, List<Point>>
         {
+            { 46, new List<Point>
+            {
+                new Point(230, -16528),
+                new Point(206, -16556),
+            }
+            },
             { 47, new List<Point>
             {
                 new Point(153, -16660),
@@ -100,12 +107,12 @@ namespace KingVsFly.GameInfo
             { 53, new List<Point>
             {
                 new Point(76, -18754),
-                new Point(49, -18874),
-                new Point(21, -19034),
-                new Point(298, -18914),
-                new Point(306, -18794),
-                new Point(425, -18914),
-                new Point(320, -19010),
+                new Point(20, -18882),
+                new Point(169, -18874),
+                new Point(303, -18794),
+                new Point(295, -18914),
+                new Point(403, -18914),
+                new Point(392, -19010),
             }
             },
             { 54, new List<Point>
@@ -126,7 +133,6 @@ namespace KingVsFly.GameInfo
                 new Point(441, -19602),
                 new Point(289, -19698),
                 new Point(424, -19762),
-                new Point(101, -19538),
             }
             },
             { 56, new List<Point>
@@ -232,24 +238,18 @@ namespace KingVsFly.GameInfo
             },
             { 65, new List<Point>
             {
-                new Point(113, -23082),
-                new Point(132, -23146),
-                new Point(70, -23234),
-                new Point(19, -23330),
-                new Point(137, -23330),
-                new Point(169, -23378),
-                new Point(378, -23210),
-                new Point(200, -23210),
+                new Point(109, -23082),
+                new Point(166, -23378),
+                new Point(238, -23322),
+                new Point(390, -23314),
             }
             },
             { 66, new List<Point>
             {
-                new Point(62, -23474),
-                new Point(40, -23578),
-                new Point(235, -23490),
-                new Point(360, -23458),
-                new Point(345, -23562),
-                new Point(427, -23586),
+                new Point(48, -23474),
+                new Point(223, -23434),
+                new Point(392, -23442),
+                new Point(424, -23714),
             }
             },
             { 67, new List<Point>
@@ -295,9 +295,7 @@ namespace KingVsFly.GameInfo
             { 71, new List<Point>
             {
                 new Point(418, -25274),
-                new Point(366, -25418),
-                new Point(148, -25314),
-                new Point(58, -25362),
+                new Point(30, -25458),
             }
             },
             { 72, new List<Point>
@@ -346,8 +344,13 @@ namespace KingVsFly.GameInfo
             { 76, new List<Point>
             {
                 new Point(277, -27106),
-                new Point(165, -27186),
                 new Point(319, -27282),
+            }
+            },
+            { 77, new List<Point>
+            {
+                new Point(326, -27402),
+                new Point(368, -27666),
             }
             },
             { 78, new List<Point>
@@ -390,6 +393,12 @@ namespace KingVsFly.GameInfo
                 new Point(356, -29034),
                 new Point(170, -29082),
                 new Point(97, -29130),
+            }
+            },
+            { 82, new List<Point>
+            {
+                new Point(259, -29266),
+                new Point(224, -29482),
             }
             },
             { 83, new List<Point>
@@ -527,7 +536,6 @@ namespace KingVsFly.GameInfo
             { 96, new List<Point>
             {
                 new Point(185, -34242),
-                new Point(82, -34322),
                 new Point(85, -34506),
                 new Point(194, -34410),
                 new Point(315, -34458),

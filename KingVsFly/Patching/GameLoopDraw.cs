@@ -20,7 +20,7 @@ namespace KingVsFly.Patching
         private static SpriteBatch spriteBatch;
 
         private static OneShotSound land;
-        private static SoundEffect flyswatter;
+        private static JKSound flyswatter;
 
         private static SpriteFont font;
         private static string text;
@@ -48,7 +48,7 @@ namespace KingVsFly.Patching
             string directory = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{sep}flyswatter";
             JKContentManager contentManager = Game1.instance.contentManager;
 
-            flyswatter = contentManager.Load<SoundEffect>(directory);
+            flyswatter = new JKSound(contentManager.Load<SoundEffect>(directory), SoundType.SFX);
             land = contentManager.audio.player.Land;
             font = contentManager.font.MenuFont;
 
@@ -83,7 +83,7 @@ namespace KingVsFly.Patching
                         state = EndingState.Stats;
                         if (ModEntry.isCheckpoint)
                         {
-                            text = $"Checkpoint Resets: {ModEntry.gameState.resets}";
+                            text = $"Checkpoint Resets: {ModEntry.entityCheckpoint.resets}";
                         }
                         else
                         {
@@ -114,6 +114,7 @@ namespace KingVsFly.Patching
                 case EndingState.Image:
                     if (duration <= 0)
                     {
+                        duration = 30;
                         state = EndingState.ToMenu;
                     }
                     spriteBatch.Draw(pixel, new Rectangle(0, 0, Game1.WIDTH, Game1.HEIGHT), Color.Black);

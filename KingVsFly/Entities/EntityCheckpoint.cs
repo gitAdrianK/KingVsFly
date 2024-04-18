@@ -2,9 +2,12 @@
 using JumpKing;
 using JumpKing.Level;
 using JumpKing.Player;
-using KingVsFly.Game;
+using JumpKing.SaveThread;
+using KingVsFly.GameInfo;
+using KingVsFly.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -12,60 +15,103 @@ namespace KingVsFly.Entities
 {
     public class EntityCheckpoint : Entity
     {
-        GameState gameState;
-        JKContentManager contentManager;
-        Texture2D texture;
-        PlayerEntity player;
-        int screen;
+        private List<AreaBounds> areas;
+        private Dictionary<int, List<Point>> positions;
+        private IEnumerator<int> enumerator;
+        private int currentScreen => enumerator.Current;
+        public Point resetPosition;
+        public int resets;
 
-        public EntityCheckpoint(GameState gameState, PlayerEntity player)
+        private Texture2D texture;
+
+        private PlayerEntity entityPlayer;
+
+        public EntityFly entityFly;
+
+        private bool isUnderburgRevisit65;
+        private bool isUnderburgRevisit66;
+
+        public EntityCheckpoint(PlayerEntity entityPlayer)
         {
-            contentManager = Game1.instance.contentManager;
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
+            {
+                areas = GhostBabeGameInfo.areas;
+                positions = GhostBabeGameInfo.positions;
+            }
+            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
+            {
+                areas = NewBabeGameInfo.areas;
+                positions = NewBabeGameInfo.positions;
+            }
+            else
+            {
+                areas = MainBabeGameInfo.areas;
+                positions = MainBabeGameInfo.positions;
+            }
+            enumerator = AreaBounds.BoundsListIterator(areas).GetEnumerator();
+            enumerator.MoveNext();
+            resetPosition = positions[currentScreen][0];
+            resets = 0;
+
+            JKContentManager contentManager = Game1.instance.contentManager;
             char sep = Path.DirectorySeparatorChar;
             string directory = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{sep}flag";
-
             texture = contentManager.Load<Texture2D>(directory);
 
-            this.gameState = gameState;
-            this.player = player;
+            this.entityPlayer = entityPlayer;
             ResetPlayer();
 
-            screen = gameState.currentScreen;
-            Camera.UpdateCamera(gameState.resetPosition);
+            isUnderburgRevisit65 = false;
+            isUnderburgRevisit66 = false;
         }
 
         protected override void Update(float deltaTime)
         {
-            if (Camera.CurrentScreen < screen)
+            int cameraScreen = Camera.CurrentScreen;
+            if (cameraScreen != currentScreen
+                && cameraScreen != entityFly.currentScreen
+                && cameraScreen != entityFly.currentScreen + 1)
             {
                 ResetPlayer();
-                Camera.UpdateCamera(gameState.resetPosition);
-                gameState.resets++;
+                resets++;
                 return;
             }
-            if (screen < gameState.currentScreen
-                && Camera.CurrentScreen == screen + 1
-                && (player.m_body.IsOnGround || player.m_body.IsOnBlock<SandBlock>()))
+
+            if (currentScreen != entityFly.currentScreen
+                && cameraScreen == entityFly.currentScreen
+                && (entityPlayer.m_body.IsOnGround || entityPlayer.m_body.IsOnBlock<SandBlock>()))
             {
-                gameState.resetPosition = gameState.positions[(int)gameState.enumerator.Current][0];
-                if (Camera.CurrentScreen != gameState.currentScreen)
+                enumerator.MoveNext();
+                resetPosition = positions[currentScreen][0];
+                if (currentScreen == 65)
                 {
-                    ResetPlayer();
+                    if (isUnderburgRevisit65)
+                    {
+                        resetPosition = positions[currentScreen][2];
+                    }
+                    isUnderburgRevisit65 = true;
                 }
-                screen = ModEntry.gameState.currentScreen;
-                return;
+                if (currentScreen == 66)
+                {
+                    if (isUnderburgRevisit66)
+                    {
+                        resetPosition = positions[currentScreen][2];
+                    }
+                    isUnderburgRevisit66 = true;
+                }
             }
         }
 
         private void ResetPlayer()
         {
-            player.m_body.Position = gameState.resetPosition.ToVector2();
-            player.m_body.Velocity = Vector2.Zero;
+            entityPlayer.m_body.Position = resetPosition.ToVector2();
+            entityPlayer.m_body.Velocity = Vector2.Zero;
+            Camera.UpdateCamera(resetPosition);
         }
 
         public override void Draw()
         {
-            Point point = gameState.resetPosition;
+            Point point = resetPosition;
             float actualX = point.X;
             float actualY = point.Y + Camera.CurrentScreen * 360 - 6;
             Game1.spriteBatch.Draw(

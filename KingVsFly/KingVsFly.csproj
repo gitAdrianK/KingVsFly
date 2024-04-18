@@ -73,7 +73,6 @@
   <ItemGroup>
     <Compile Include="Entities\EntityCheckpoint.cs" />
     <Compile Include="Entities\EntityFly.cs" />
-    <Compile Include="Game\GameState.cs" />
     <Compile Include="Nodes\NodeToggleCheckpoint.cs" />
     <Compile Include="Nodes\NodeToggleEnabled.cs" />
     <Compile Include="Patching\GameLoopDraw.cs" />
@@ -83,7 +82,6 @@
     <Compile Include="Game\NewBabeGameInfo.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\FlyContent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
