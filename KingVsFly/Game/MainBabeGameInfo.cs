@@ -86,23 +86,19 @@ namespace KingVsFly.GameInfo
             { 5, new List<Point>
             {
                 new Point(175, -1498),
-                new Point(443, -1642),
-                new Point(323, -1682),
-                new Point(150, -1586),
-                new Point(28, -1642),
-                new Point(70, -1754),
-                new Point(162, -1714),
-                new Point(295, -1746),
+                new Point(146, -1586),
+                new Point(27, -1642),
+                new Point(67, -1754),
+                new Point(299, -1746),
             }
             },
             { 6, new List<Point>
             {
-                new Point(397, -1842),
-                new Point(342, -1882),
-                new Point(400, -1978),
-                new Point(164, -1946),
-                new Point(16, -2018),
-                new Point(126, -2138),
+                new Point(402, -1842),
+                new Point(300, -1978),
+                new Point(163, -1964),
+                new Point(17, -2018),
+                new Point(129, -2138),
             }
             },
             { 7, new List<Point>

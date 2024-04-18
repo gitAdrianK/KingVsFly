@@ -80,14 +80,16 @@ namespace KingVsFly
             List<Entity> toRemoveEntities = new List<Entity>();
             foreach (var entity in entityManager.Entities)
             {
-                // Removing the majority of entities to give the feel of "After the events of Jump King".
+                // Removing npc and worlditem entities to give the feel of "After the events of Jump King".
                 // Whatever that is supposed to mean :)
-                // Making so many exceptions I might just go positive logic
                 string type = entity.GetType().ToString();
-                if ((type.Contains("Props") && !type.Contains("LoopingProp"))
-                    || type.Contains("MiscEntities")
-                    || type.Contains("MultiEnding")
-                    || type.Contains("Rayman"))
+                if (type.Contains("MultiEnding")
+                    || type.Contains("RavenEntity")
+                    || type.Contains("OldManEntity")
+                    || type.Contains("MerchantEntity")
+                    || type.Contains("WorldItem")
+                    || type.Contains("Achievement")
+                    || type.Contains("RattmanEntity"))
                 {
                     toRemoveEntities.Add(entity);
                 }
