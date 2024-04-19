@@ -15,7 +15,7 @@ If you are sure you can take it the checkpoint system can be disabled.
 ## Be aware of
 This mod does not save (yet, unsure if it ever will), it is supposed to be played in a single sitting.
 While the mod doesn't save, Jump King sure still does, so be aware that you do not have a run going you want to keep.
-You'll get teleported every now and then skipping screens that have no real way for you to fall out off or cannot be entirely backtracked to the beginning platform.
+The ghost babe tower is being skipped for now, gotta work out how to have the king recover from a splat even if he isn't on solid ground after the reset.
 
 Art donations are appreciated, lmao
 
