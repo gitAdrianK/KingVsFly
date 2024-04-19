@@ -24,6 +24,7 @@ namespace KingVsFly
 
         public static EntityCheckpoint entityCheckpoint;
         public static EntityFly entityFly;
+        public static EntitySnake entitySnake;
 
         public static Harmony harmony;
         public static GameLoopDraw gameLoopDraw;
@@ -108,6 +109,12 @@ namespace KingVsFly
                 entityManager.AddObject(entityCheckpoint);
             }
             entityManager.AddObject(entityFly);
+
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
+            {
+                entitySnake = new EntitySnake();
+                entityManager.AddObject(entitySnake);
+            }
         }
 
         /// <summary>
@@ -125,9 +132,11 @@ namespace KingVsFly
 
             entityManager.RemoveObject(entityFly);
             entityManager.RemoveObject(entityCheckpoint);
+            entityManager.RemoveObject(entitySnake);
 
             entityFly = null;
             entityCheckpoint = null;
+            entitySnake = null;
 
             SaveManager.instance?.StopSaving();
             SaveManager.instance?.AddTaskDeleteSaveFile();

@@ -111,6 +111,11 @@ namespace KingVsFly.Entities
 
         public override void Draw()
         {
+            if (Camera.CurrentScreen != currentScreen)
+            {
+                return;
+            }
+
             Point point = resetPosition;
             float actualX = point.X;
             float actualY = point.Y + Camera.CurrentScreen * 360 - 6;
