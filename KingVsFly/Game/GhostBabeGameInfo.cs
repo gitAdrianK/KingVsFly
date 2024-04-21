@@ -18,9 +18,7 @@ namespace KingVsFly.GameInfo
             new AreaBounds(123, 129),   // House Of Nine Lives
             new AreaBounds(130, 138),   // Phantom Tower
             new AreaBounds(139, 146),   // Halted Ruin
-            // BUG: See sand splat issue on github, cant stand up again.
-            //new AreaBounds(147, 153),   // Tower Of Antumbra
-            new AreaBounds(153, 153),
+            new AreaBounds(147, 153),   // Tower Of Antumbra
         };
 
         /// <summary>

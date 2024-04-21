@@ -1,4 +1,5 @@
 ﻿using EntityComponent;
+using HarmonyLib;
 using JumpKing;
 using JumpKing.Level;
 using JumpKing.Player;
@@ -25,6 +26,8 @@ namespace KingVsFly.Entities
         private Texture2D texture;
 
         private PlayerEntity entityPlayer;
+        private Traverse traversePlayer;
+        private Traverse traverseFailState;
 
         public EntityFly entityFly;
 
@@ -59,6 +62,8 @@ namespace KingVsFly.Entities
             texture = contentManager.Load<Texture2D>(directory);
 
             this.entityPlayer = entityPlayer;
+            traversePlayer = Traverse.Create(this.entityPlayer);
+            traverseFailState = traversePlayer?.Field("m_fail_state");
             ResetPlayer();
 
             isUnderburgRevisit65 = false;
@@ -104,6 +109,7 @@ namespace KingVsFly.Entities
 
         private void ResetPlayer()
         {
+            traverseFailState.Field("m_wait_done").SetValue(true);
             entityPlayer.m_body.Position = resetPosition.ToVector2();
             entityPlayer.m_body.Velocity = Vector2.Zero;
             Camera.UpdateCamera(resetPosition);
