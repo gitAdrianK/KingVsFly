@@ -74,6 +74,7 @@
     <Compile Include="Entities\EntityCheckpoint.cs" />
     <Compile Include="Entities\EntityFly.cs" />
     <Compile Include="Entities\EntitySnake.cs" />
+    <Compile Include="ModSaves.cs" />
     <Compile Include="Nodes\NodeToggleCheckpoint.cs" />
     <Compile Include="Nodes\NodeToggleEnabled.cs" />
     <Compile Include="Patching\GameLoopDraw.cs" />

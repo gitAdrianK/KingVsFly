@@ -36,12 +36,12 @@ namespace KingVsFly.Entities
 
         public EntityCheckpoint(PlayerEntity entityPlayer)
         {
-            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
+            if (ModEntry.flag == StoryEventFlags.StartedGhost)
             {
                 areas = GhostBabeGameInfo.areas;
                 positions = GhostBabeGameInfo.positions;
             }
-            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
+            else if (ModEntry.flag == StoryEventFlags.StartedNBP)
             {
                 areas = NewBabeGameInfo.areas;
                 positions = NewBabeGameInfo.positions;

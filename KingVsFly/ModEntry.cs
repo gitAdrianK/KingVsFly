@@ -3,12 +3,14 @@ using HarmonyLib;
 using JumpKing;
 using JumpKing.Mods;
 using JumpKing.PauseMenu;
+using JumpKing.PauseMenu.BT;
 using JumpKing.PauseMenu.BT.Actions;
 using JumpKing.Player;
 using JumpKing.SaveThread;
 using KingVsFly.Entities;
 using KingVsFly.Nodes;
 using KingVsFly.Patching;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 // Patching with Harmony was a crashfest for some reason,
@@ -29,7 +31,42 @@ namespace KingVsFly
         public static Harmony harmony;
         public static GameLoopDraw gameLoopDraw;
 
+        public static StoryEventFlags flag;
+
         // DO NOT REMOVE object and GuiFormat even if they are unused!
+        [MainMenuItemSetting]
+        public static TextInfo AddMainBabeStats(object factory, GuiFormat format)
+        {
+            int record = ModSaves.Instance.mainBabeRecord;
+            if (record == -1)
+            {
+                return new TextInfo("Main babe: -", Color.Gray);
+            }
+            return new TextInfo("Main babe: " + record, Color.Gray);
+        }
+
+        [MainMenuItemSetting]
+        public static TextInfo AddNewBabeStats(object factory, GuiFormat format)
+        {
+            int record = ModSaves.Instance.newBabeRecord;
+            if (record == -1)
+            {
+                return new TextInfo("New babe: -", Color.Gray);
+            }
+            return new TextInfo("New babe: " + record, Color.Gray);
+        }
+
+        [MainMenuItemSetting]
+        public static TextInfo AddGhostBabeStats(object factory, GuiFormat format)
+        {
+            int record = ModSaves.Instance.ghostBabeRecord;
+            if (record == -1)
+            {
+                return new TextInfo("Ghost babe: -", Color.Gray);
+            }
+            return new TextInfo("Ghost babe: " + record, Color.Gray);
+        }
+
         [MainMenuItemSetting]
         public static ITextToggle AddToggleEnabled(object factory, GuiFormat format)
         {
@@ -111,6 +148,15 @@ namespace KingVsFly
             entityManager.AddObject(entityFly);
 
             if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
+            {
+                flag = StoryEventFlags.StartedNBP;
+            }
+            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
+            {
+                flag = StoryEventFlags.StartedGhost;
+            }
+
+            if (flag == StoryEventFlags.StartedNBP)
             {
                 entitySnake = new EntitySnake();
                 entityManager.AddObject(entitySnake);
