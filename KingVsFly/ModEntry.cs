@@ -10,6 +10,7 @@ using JumpKing.SaveThread;
 using KingVsFly.Entities;
 using KingVsFly.Nodes;
 using KingVsFly.Patching;
+using LanguageJK;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
@@ -40,9 +41,9 @@ namespace KingVsFly
             int record = ModSaves.Instance.mainBabeRecord;
             if (record == -1)
             {
-                return new TextInfo("Main babe: -", Color.Gray);
+                return new TextInfo($"{language.GAMETITLESCREEN_NEW_GAME}: -", Color.Gray);
             }
-            return new TextInfo("Main babe: " + record, Color.Gray);
+            return new TextInfo($"{language.GAMETITLESCREEN_NEW_GAME}: " + record, Color.Gray);
         }
 
         [MainMenuItemSetting]
@@ -51,9 +52,9 @@ namespace KingVsFly
             int record = ModSaves.Instance.newBabeRecord;
             if (record == -1)
             {
-                return new TextInfo("New babe: -", Color.Gray);
+                return new TextInfo($"{language.GAMETITLESCREEN_NEW_BABE_PLUS}: -", Color.Gray);
             }
-            return new TextInfo("New babe: " + record, Color.Gray);
+            return new TextInfo($"{language.GAMETITLESCREEN_NEW_BABE_PLUS}: " + record, Color.Gray);
         }
 
         [MainMenuItemSetting]
@@ -62,9 +63,9 @@ namespace KingVsFly
             int record = ModSaves.Instance.ghostBabeRecord;
             if (record == -1)
             {
-                return new TextInfo("Ghost babe: -", Color.Gray);
+                return new TextInfo($"{language.GAMETITLESCREEN_GHOST_OF_THE_BABE}: -", Color.Gray);
             }
-            return new TextInfo("Ghost babe: " + record, Color.Gray);
+            return new TextInfo($"{language.GAMETITLESCREEN_GHOST_OF_THE_BABE}: " + record, Color.Gray);
         }
 
         [MainMenuItemSetting]
