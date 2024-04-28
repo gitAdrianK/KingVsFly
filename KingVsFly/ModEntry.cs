@@ -136,6 +136,15 @@ namespace KingVsFly
                 entityManager.RemoveObject(entity);
             }
 
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
+            {
+                flag = StoryEventFlags.StartedNBP;
+            }
+            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
+            {
+                flag = StoryEventFlags.StartedGhost;
+            }
+
             entityFly = new EntityFly(entityPlayer);
             if (isCheckpoint)
             {
@@ -147,15 +156,6 @@ namespace KingVsFly
                 entityManager.AddObject(entityCheckpoint);
             }
             entityManager.AddObject(entityFly);
-
-            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
-            {
-                flag = StoryEventFlags.StartedNBP;
-            }
-            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
-            {
-                flag = StoryEventFlags.StartedGhost;
-            }
 
             if (flag == StoryEventFlags.StartedNBP)
             {
