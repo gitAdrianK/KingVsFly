@@ -18,6 +18,7 @@ namespace KingVsFly.Entities
     {
         private List<AreaBounds> areas;
         private Dictionary<int, List<Point>> positions;
+        private int finalScreen;
         private IEnumerator<int> enumerator;
         private int currentScreen => enumerator.Current;
         public Point resetPosition;
@@ -36,20 +37,23 @@ namespace KingVsFly.Entities
 
         public EntityCheckpoint(PlayerEntity entityPlayer)
         {
-            if (ModEntry.flag == StoryEventFlags.StartedGhost)
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
             {
                 areas = GhostBabeGameInfo.areas;
                 positions = GhostBabeGameInfo.positions;
+                finalScreen = GhostBabeGameInfo.finalScreen;
             }
-            else if (ModEntry.flag == StoryEventFlags.StartedNBP)
+            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
             {
                 areas = NewBabeGameInfo.areas;
                 positions = NewBabeGameInfo.positions;
+                finalScreen = NewBabeGameInfo.finalScreen;
             }
             else
             {
                 areas = MainBabeGameInfo.areas;
                 positions = MainBabeGameInfo.positions;
+                finalScreen = MainBabeGameInfo.finalScreen;
             }
             enumerator = AreaBounds.BoundsListIterator(areas).GetEnumerator();
             enumerator.MoveNext();
@@ -73,6 +77,12 @@ namespace KingVsFly.Entities
         protected override void Update(float deltaTime)
         {
             int cameraScreen = Camera.CurrentScreen;
+            if (cameraScreen == finalScreen
+                && entityFly.currentScreen != finalScreen)
+            {
+                ResetPlayer();
+                return;
+            }
             if (cameraScreen != currentScreen
                 && cameraScreen != entityFly.currentScreen
                 && cameraScreen != entityFly.currentScreen + 1)

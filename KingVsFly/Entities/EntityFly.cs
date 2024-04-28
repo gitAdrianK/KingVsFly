@@ -66,13 +66,13 @@ namespace KingVsFly.Entities
 
         public EntityFly(PlayerEntity entityPlayer)
         {
-            if (ModEntry.flag == StoryEventFlags.StartedGhost)
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
             {
                 areas = GhostBabeGameInfo.areas;
                 positions = GhostBabeGameInfo.positions;
                 finalScreen = GhostBabeGameInfo.finalScreen;
             }
-            else if (ModEntry.flag == StoryEventFlags.StartedNBP)
+            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
             {
                 areas = NewBabeGameInfo.areas;
                 positions = NewBabeGameInfo.positions;

@@ -109,14 +109,14 @@ namespace KingVsFly.Patching
                 }
                 textSize = font.MeasureString(text);
 
-                if (ModEntry.flag == StoryEventFlags.StartedNBP)
+                if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
                 {
                     if (ModEntry.entityCheckpoint.resets < ModSaves.Instance.newBabeRecord || ModSaves.Instance.newBabeRecord == -1)
                     {
                         ModSaves.Instance.newBabeRecord = ModEntry.entityCheckpoint.resets;
                     }
                 }
-                else if (ModEntry.flag == StoryEventFlags.StartedGhost)
+                else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
                 {
                     if (ModEntry.entityCheckpoint.resets < ModSaves.Instance.ghostBabeRecord || ModSaves.Instance.ghostBabeRecord == -1)
                     {

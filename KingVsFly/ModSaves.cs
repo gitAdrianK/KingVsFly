@@ -86,7 +86,7 @@ namespace KingVsFly
                 newBabeRecord = binaryReader.ReadInt32();
                 ghostBabeRecord = binaryReader.ReadInt32();
             }
-            catch (Exception e)
+            catch
             {
                 SetRecords();
             }

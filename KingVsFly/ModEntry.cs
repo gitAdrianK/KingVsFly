@@ -32,8 +32,6 @@ namespace KingVsFly
         public static Harmony harmony;
         public static GameLoopDraw gameLoopDraw;
 
-        public static StoryEventFlags flag;
-
         // DO NOT REMOVE object and GuiFormat even if they are unused!
         [MainMenuItemSetting]
         public static TextInfo AddMainBabeStats(object factory, GuiFormat format)
@@ -136,15 +134,6 @@ namespace KingVsFly
                 entityManager.RemoveObject(entity);
             }
 
-            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
-            {
-                flag = StoryEventFlags.StartedNBP;
-            }
-            else if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedGhost))
-            {
-                flag = StoryEventFlags.StartedGhost;
-            }
-
             entityFly = new EntityFly(entityPlayer);
             if (isCheckpoint)
             {
@@ -157,7 +146,7 @@ namespace KingVsFly
             }
             entityManager.AddObject(entityFly);
 
-            if (flag == StoryEventFlags.StartedNBP)
+            if (EventFlagsSave.ContainsFlag(StoryEventFlags.StartedNBP))
             {
                 entitySnake = new EntitySnake();
                 entityManager.AddObject(entitySnake);
