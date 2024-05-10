@@ -62,7 +62,7 @@ namespace KingVsFly
             finally
             {
                 binaryWriter?.Flush();
-                binaryWriter?.Dispose();
+                binaryWriter?.Close();
             }
         }
 
@@ -92,7 +92,7 @@ namespace KingVsFly
             }
             finally
             {
-                binaryReader?.Dispose();
+                binaryReader?.Close();
             }
         }
 
