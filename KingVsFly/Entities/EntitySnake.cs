@@ -10,13 +10,13 @@ namespace KingVsFly.Entities
 {
     public class EntitySnake : Entity
     {
-        private Random random;
+        private readonly Random random;
         private int index;
         private int cooldown;
-        private Vector2 position;
-        private Texture2D texture;
-        private int sectionWidth;
-        private int sectionHeight;
+        private readonly Vector2 position;
+        private readonly Texture2D texture;
+        private readonly int sectionWidth;
+        private readonly int sectionHeight;
         public EntitySnake()
         {
             random = Game1.random;

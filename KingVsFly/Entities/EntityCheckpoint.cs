@@ -16,19 +16,19 @@ namespace KingVsFly.Entities
 {
     public class EntityCheckpoint : Entity
     {
-        private List<AreaBounds> areas;
-        private Dictionary<int, List<Point>> positions;
-        private int finalScreen;
-        private IEnumerator<int> enumerator;
-        private int currentScreen => enumerator.Current;
+        private readonly List<AreaBounds> areas;
+        private readonly Dictionary<int, List<Point>> positions;
+        private readonly int finalScreen;
+        private readonly IEnumerator<int> enumerator;
+        private int CurrentScreen => enumerator.Current;
         public Point resetPosition;
         public int resets;
 
-        private Texture2D texture;
+        private readonly Texture2D texture;
 
-        private PlayerEntity entityPlayer;
-        private Traverse traversePlayer;
-        private Traverse traverseFailState;
+        private readonly PlayerEntity entityPlayer;
+        private readonly Traverse traversePlayer;
+        private readonly Traverse traverseFailState;
 
         public EntityFly entityFly;
 
@@ -57,7 +57,7 @@ namespace KingVsFly.Entities
             }
             enumerator = AreaBounds.BoundsListIterator(areas).GetEnumerator();
             enumerator.MoveNext();
-            resetPosition = positions[currentScreen][0];
+            resetPosition = positions[CurrentScreen][0];
             resets = 0;
 
             JKContentManager contentManager = Game1.instance.contentManager;
@@ -78,39 +78,39 @@ namespace KingVsFly.Entities
         {
             int cameraScreen = Camera.CurrentScreen;
             if (cameraScreen == finalScreen
-                && entityFly.currentScreen != finalScreen)
+                && entityFly.CurrentScreen != finalScreen)
             {
                 ResetPlayer();
                 return;
             }
-            if (cameraScreen != currentScreen
-                && cameraScreen != entityFly.currentScreen
-                && cameraScreen != entityFly.currentScreen + 1)
+            if (cameraScreen != CurrentScreen
+                && cameraScreen != entityFly.CurrentScreen
+                && cameraScreen != entityFly.CurrentScreen + 1)
             {
                 ResetPlayer();
                 resets++;
                 return;
             }
 
-            if (currentScreen != entityFly.currentScreen
-                && cameraScreen == entityFly.currentScreen
+            if (CurrentScreen != entityFly.CurrentScreen
+                && cameraScreen == entityFly.CurrentScreen
                 && (entityPlayer.m_body.IsOnGround || entityPlayer.m_body.IsOnBlock<SandBlock>()))
             {
                 enumerator.MoveNext();
-                resetPosition = positions[currentScreen][0];
-                if (currentScreen == 65)
+                resetPosition = positions[CurrentScreen][0];
+                if (CurrentScreen == 65)
                 {
                     if (isUnderburgRevisit65)
                     {
-                        resetPosition = positions[currentScreen][2];
+                        resetPosition = positions[CurrentScreen][2];
                     }
                     isUnderburgRevisit65 = true;
                 }
-                if (currentScreen == 66)
+                if (CurrentScreen == 66)
                 {
                     if (isUnderburgRevisit66)
                     {
-                        resetPosition = positions[currentScreen][2];
+                        resetPosition = positions[CurrentScreen][2];
                     }
                     isUnderburgRevisit66 = true;
                 }
@@ -127,7 +127,7 @@ namespace KingVsFly.Entities
 
         public override void Draw()
         {
-            if (Camera.CurrentScreen != currentScreen)
+            if (Camera.CurrentScreen != CurrentScreen)
             {
                 return;
             }

@@ -18,12 +18,12 @@ namespace KingVsFly.Entities
 {
     public class EntityFly : Entity
     {
-        private List<AreaBounds> areas;
-        private Dictionary<int, List<Point>> positions;
-        private int finalScreen;
-        private IEnumerator<int> enumerator;
-        private Queue<Point> positionsQueue;
-        public int currentScreen => enumerator.Current;
+        private readonly List<AreaBounds> areas;
+        private readonly Dictionary<int, List<Point>> positions;
+        private readonly int finalScreen;
+        private readonly IEnumerator<int> enumerator;
+        private readonly Queue<Point> positionsQueue;
+        public int CurrentScreen => enumerator.Current;
         private int prevScreen;
 
         private enum Facing
@@ -43,10 +43,10 @@ namespace KingVsFly.Entities
         private Facing facing;
         private State state;
 
-        private Random random;
+        private readonly Random random;
 
-        private RavenContent flySprites;
-        private JKSound sound;
+        private readonly RavenContent flySprites;
+        private readonly JKSound sound;
 
         private float progress;
         private Vector2 position;
@@ -58,7 +58,7 @@ namespace KingVsFly.Entities
         private int flyingIndex;
         private int flyingFrames;
 
-        private PlayerEntity entityPlayer;
+        private readonly PlayerEntity entityPlayer;
         public EntityCheckpoint entityCheckpoint;
 
         private bool isUnderburgRevisit65;
@@ -86,7 +86,7 @@ namespace KingVsFly.Entities
             }
             enumerator = AreaBounds.BoundsListIterator(areas).GetEnumerator();
             enumerator.MoveNext();
-            prevScreen = currentScreen;
+            prevScreen = CurrentScreen;
             positionsQueue = new Queue<Point>();
             GetRandomCurrentScreenPoints();
             position = positionsQueue.Dequeue().ToVector2();
@@ -155,7 +155,7 @@ namespace KingVsFly.Entities
             prevPosition = position;
             if (positionsQueue.Count == 0)
             {
-                prevScreen = currentScreen;
+                prevScreen = CurrentScreen;
                 enumerator.MoveNext();
                 GetRandomCurrentScreenPoints();
             }
@@ -194,7 +194,7 @@ namespace KingVsFly.Entities
                 state = State.Idle;
                 position = nextPosition;
                 prevPosition = position;
-                if (currentScreen == finalScreen)
+                if (CurrentScreen == finalScreen)
                 {
                     state = State.Waiting;
                 }
@@ -235,37 +235,37 @@ namespace KingVsFly.Entities
         /// <returns>Queue of random points.</returns>
         private void GetRandomCurrentScreenPoints()
         {
-            if (currentScreen == 65)
+            if (CurrentScreen == 65)
             {
                 if (isUnderburgRevisit65)
                 {
-                    positionsQueue.Enqueue(positions[currentScreen][3]);
+                    positionsQueue.Enqueue(positions[CurrentScreen][3]);
                     return;
                 }
-                positionsQueue.Enqueue(positions[currentScreen][1]);
+                positionsQueue.Enqueue(positions[CurrentScreen][1]);
                 isUnderburgRevisit65 = true;
                 return;
             }
-            if (currentScreen == 66)
+            if (CurrentScreen == 66)
             {
                 if (isUnderburgRevisit66)
                 {
-                    positionsQueue.Enqueue(positions[currentScreen][3]);
+                    positionsQueue.Enqueue(positions[CurrentScreen][3]);
                     return;
                 }
-                positionsQueue.Enqueue(positions[currentScreen][1]);
+                positionsQueue.Enqueue(positions[CurrentScreen][1]);
                 isUnderburgRevisit66 = true;
                 return;
             }
 
-            if (positions[currentScreen].Count == 2)
+            if (positions[CurrentScreen].Count == 2)
             {
-                positionsQueue.Enqueue(positions[currentScreen][1]);
+                positionsQueue.Enqueue(positions[CurrentScreen][1]);
                 return;
             }
 
             Random random = Game1.random;
-            List<Point> points = positions[currentScreen];
+            List<Point> points = positions[CurrentScreen];
             int next = random.Next(1, points.Count);
             int prev = next;
             positionsQueue.Enqueue(points[next]);
@@ -285,7 +285,7 @@ namespace KingVsFly.Entities
         public override void Draw()
         {
             int cameraScreen = Camera.CurrentScreen;
-            if (prevScreen != cameraScreen && currentScreen != cameraScreen)
+            if (prevScreen != cameraScreen && CurrentScreen != cameraScreen)
             {
                 return;
             }
